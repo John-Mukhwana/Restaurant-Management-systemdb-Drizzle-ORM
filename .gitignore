@@ -3,3 +3,6 @@ json
 .bin
 .pnpm
 node_modules
+dist
+.json
+package.json
