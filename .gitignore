@@ -1,5 +1,5 @@
 json
-node_modules
 .yaml
 .bin
 .pnpm
+node_modules
