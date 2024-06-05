@@ -19,6 +19,9 @@
 // });
 
 import { pgTable, serial, text, varchar, integer, boolean, decimal, timestamp } from 'drizzle-orm/pg-core';
+import { relations } from "drizzle-orm";
+
+
 
 // Users Table
 export const usersTable = pgTable("users", {
@@ -166,3 +169,74 @@ export const driverTable = pgTable("driver", {
   createdAt: timestamp("created_at").notNull(),
   updatedAt: timestamp("updated_at").notNull(),
 });
+
+
+//relationship : state (1) - (n) city one state can have many cities
+// City Table
+export const cityRelations = relations(cityTable, ({ one,many }) => ({
+     // Many-to-One with addressTable
+     address: one(addressTable, {
+       fields: [cityTable.id],
+       references: [addressTable.cityId],})
+     }));
+
+//relationship : category (1) - (n) menu_item
+export const categoryRelations = relations(categoryTable, ({ one, many }) => ({  
+     menuItem: many(menuItemTable)
+ }));
+
+ //relationship : driver (1) - (1) user 
+export const driverRelations = relations(driverTable, ({ one }) => ({  
+     user: one(usersTable, {
+         fields: [driverTable.userId],
+         references: [usersTable.id]
+     })
+ }));
+
+ //relationship : comment (1) - (1) order & comment(1) - (1) user
+export const commentRelations = relations(commentTable, ({ one }) => ({  
+     order: one(ordersTable, {
+         fields: [commentTable.orderId],
+         references: [ordersTable.id]
+     }),
+     user: one(usersTable, {
+         fields: [commentTable.userId],
+         references: [usersTable.id]
+     })
+ }));
+
+
+//relationship : address (1) - (n) order & address(1) - (1) user & address(1) - (1) city
+export const addressRelations = relations(addressTable, ({ one, many }) => ({  
+     order: many(ordersTable),
+     user: one(usersTable, {
+         fields: [addressTable.userId],
+         references: [usersTable.id]
+     }),
+     city: one(cityTable, {
+         fields: [addressTable.cityId],
+         references: [cityTable.id]
+     })
+ }));
+
+//relationship : restaurant (1) - (n) restaurant_owner & restaurant(1) - (n) menu_item & restaurant(1) - (n) order & restaurant(1) - (1) city
+export const restaurantRelations = relations(restaurantTable, ({ one, many }) => ({  
+     restaurantOwner: many(restaurantOwnerTable),
+     menuItem: many(menuItemTable),
+     order: many(ordersTable),
+     city: one(cityTable, {
+         fields: [restaurantTable.cityId],
+         references: [cityTable.id]
+     })
+ }));
+
+
+
+export type TIState = typeof stateTable.$inferInsert;
+export type TSState = typeof stateTable.$inferSelect;
+
+export type TICity = typeof cityTable.$inferInsert;
+export type TSCity = typeof cityTable.$inferSelect;
+
+
+ 
