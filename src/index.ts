@@ -1,6 +1,13 @@
 
+// import db from "./drizzle/db";
 
-function  hello(name: string) {
-    console.log(`Hello ${name}`);
-}
-hello("World");
+// const getUsers = async () => {
+//     return await db.query.userTable.findMany();
+
+// }
+
+// async function main(){
+
+//     console.log(await getUsers());
+// }
+// main();
